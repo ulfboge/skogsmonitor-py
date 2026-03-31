@@ -38,8 +38,8 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 ## GitHub Pages
 
-1. **Settings → Pages → Build and deployment**: källa **GitHub Actions** (workflow `deploy-pages.yml` bygger S2/NDVI/COG på Ubuntu och laddar upp `docs/`).
-2. Första gången kan du behöva godkänna **github-pages**-miljön under **Actions**.
+1. **Settings → Pages → Build and deployment → Source:** välj **GitHub Actions** (inte “Deploy from a branch”). Utan detta misslyckas oftast **deploy**-jobbet direkt trots att **build** är grönt.
+2. Workflow `deploy-pages.yml` bygger S2/NDVI/COG på Ubuntu och laddar upp `docs/`. Vid deploy-fel: öppna **deploy**-jobbets logg — vanliga orsaker är fel källa under Pages eller saknad godkänd **github-pages**-miljö.
 3. Lokalt är **COG** under `docs/cogs/*.tif` **gitignorade**; på Pages kommer de från CI efter lyckad körning.
 
 ## Jämfört med GEE-demon
