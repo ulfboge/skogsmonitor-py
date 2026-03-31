@@ -38,8 +38,10 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 ## GitHub Pages
 
-1. **Settings → Pages → Build and deployment → Source:** välj **GitHub Actions** (inte “Deploy from a branch”). Utan detta misslyckas oftast **deploy**-jobbet direkt trots att **build** är grönt.
-2. Workflow `deploy-pages.yml` bygger S2/NDVI/COG på Ubuntu och laddar upp `docs/`. Vid deploy-fel: öppna **deploy**-jobbets logg — vanliga orsaker är fel källa under Pages eller saknad godkänd **github-pages**-miljö.
+**Karta:** […/skogsmonitor-py/docs/](https://ulfboge.github.io/skogsmonitor-py/docs/) (NDVI-lager). Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)** — då pekar rot-`index.html` i repot vidare till `docs/`, och `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
+
+1. **Rekommenderat:** **Settings → Pages → Source → GitHub Actions** (workflow `deploy-pages.yml` publicerar innehållet i `docs/` som webbplatsrot — då blir kartan direkt på `https://<user>.github.io/skogsmonitor-py/`).
+2. **Alternativ med branch:** välj branch **`main`** och mapp **`/docs`** (inte root).
 3. Lokalt är **COG** under `docs/cogs/*.tif` **gitignorade**; på Pages kommer de från CI efter lyckad körning.
 
 ## Jämfört med GEE-demon
