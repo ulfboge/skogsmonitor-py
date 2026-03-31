@@ -3,11 +3,13 @@ name: Build rasters and deploy Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -32,16 +34,25 @@ jobs:
           python scripts/compute_ndvi.py
           python scripts/export_cog.py
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Verify site root
+        run: test -f docs/index.html && ls -la docs/cogs/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      actions: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
