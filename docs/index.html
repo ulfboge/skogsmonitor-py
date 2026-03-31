@@ -99,9 +99,23 @@
       } catch (e) {
         console.error(e);
         if (epoch !== undefined && epoch !== layerEpoch) return;
-        errEl.textContent =
+        let msg =
           "Kunde inte läsa GeoTIFF (404, CORS eller ogiltig COG?). Kontrollera att cogs/*.tif finns efter CI eller lokalt export_cog. " +
           (e && e.message ? "(" + e.message + ")" : "");
+        if (location.hostname.endsWith(".github.io")) {
+          try {
+            const head = await fetch(COGS.delta, { method: "HEAD", cache: "no-store" });
+            if (!head.ok) {
+              msg +=
+                " — På GitHub Actions blir mappen docs/ webbplatsrot: öppna …/" +
+                location.pathname.split("/").filter(Boolean)[0] +
+                "/ (utan /docs/ i sökvägen); COG ligger då under /cogs/, inte /docs/cogs/.";
+            }
+          } catch (_) {
+            /* ignore */
+          }
+        }
+        errEl.textContent = msg;
         map.setView(
           new View({
             center: fallbackCenter,

@@ -1,6 +1,6 @@
 # Skogsmonitor-py — NDVI & ΔNDVI (Fiby, Python / STAC)
 
-> **Visas denna README som din “webbplats” på `*.github.io/skogsmonitor-py`?** Då är GitHub Pages sannolikt satt till mapp **`/` (root)** — då väljer GitHub ofta README som startsida. **Åtgärd:** *Settings → Pages → Deploy from a branch → Branch `main` → Folder **`/docs`*** (spara). Då blir kartan på rot-URL:en. **Alternativ:** källa **GitHub Actions** (workflow i repot). **Direkt till kartan:** […/skogsmonitor-py/docs/](https://ulfboge.github.io/skogsmonitor-py/docs/)
+> **Visas denna README som din “webbplats” på `*.github.io/skogsmonitor-py`?** Då är GitHub Pages sannolikt satt till mapp **`/` (root)** — då väljer GitHub ofta README som startsida. **Åtgärd:** *Settings → Pages → Deploy from a branch → Branch `main` → Folder **`/docs`*** (spara), eller källa **GitHub Actions**. **Direkt till kartan (Actions eller branch /docs):** […/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/) — **inte** `…/docs/`; mappen `docs/` i repot blir **webbplatsens rot**, så det finns ingen sökväg `/docs/` på `github.io`.
 
 Fast AOI (**Fiby urskog**, samma WGS84-bbox som i NVI-repot) och **två sommarfönster** i `config.py`. Tre steg i samma anda som NVI:
 
@@ -40,10 +40,12 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 ## GitHub Pages
 
-**Karta:** […/skogsmonitor-py/docs/](https://ulfboge.github.io/skogsmonitor-py/docs/) (NDVI-lager). Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)** — då pekar rot-`index.html` i repot vidare till `docs/`, och `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
+**Karta (publik URL):** […/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/) — samma innehåll som lokala `docs/index.html`, men på `github.io` ligger filerna i **roten** av repots webbplats (`cogs/` inte `docs/cogs/`). Adressen **`…/skogsmonitor-py/docs/`** ger därför ofta **404 på COG** och en **tom karta** om sidan ändå laddas (t.ex. gammal länk).
 
-1. **Rekommenderat:** **Settings → Pages → Source → GitHub Actions** (workflow `deploy-pages.yml` publicerar innehållet i `docs/` som webbplatsrot — då blir kartan direkt på `https://<user>.github.io/skogsmonitor-py/`).
-2. **Alternativ med branch:** välj branch **`main`** och mapp **`/docs`** (inte root).
+Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)** — då pekar rot-`index.html` i repot vidare till `docs/` **vid lokal kloning**, och `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
+
+1. **Rekommenderat:** **Settings → Pages → Source → GitHub Actions** (workflow `deploy-pages.yml` laddar upp mappen `docs/` som **hela webbplatsen** — kartan blir `https://<user>.github.io/<repo>/`).
+2. **Alternativ med branch:** välj branch **`main`** och mapp **`/docs`** (inte root) — samma URL-mönster: **ingen** `/docs/` i webbadressen.
 3. Lokalt är **COG** under `docs/cogs/*.tif` **gitignorade**; på Pages kommer de från CI efter lyckad körning.
 
 ## Jämfört med GEE-demon
