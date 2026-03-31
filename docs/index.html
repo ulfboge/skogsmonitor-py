@@ -18,13 +18,19 @@
     .panel p { margin: 0 0 8px; color: #475569; max-width: 72ch; }
     .controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
     label { cursor: pointer; }
-    #map { height: calc(100vh - 120px); width: 100%; background: #e5e7eb; }
+    #map {
+      height: calc(100vh - 120px);
+      min-height: 280px;
+      width: 100%;
+      background: #e5e7eb;
+    }
     .err { color: #b91c1c; font-size: 13px; }
   </style>
   <script type="importmap">
   {
     "imports": {
-      "ol/": "https://cdn.jsdelivr.net/npm/ol@9.2.4/"
+      "ol/": "https://cdn.jsdelivr.net/npm/ol@9.2.4/",
+      "proj4": "https://cdn.jsdelivr.net/npm/proj4@2.11.0/+esm"
     }
   }
   </script>
@@ -47,6 +53,8 @@
   </div>
   <div id="map"></div>
   <script type="module">
+    import proj4 from "proj4";
+    import { register } from "ol/proj/proj4.js";
     import Map from "ol/Map.js";
     import View from "ol/View.js";
     import TileLayer from "ol/layer/Tile.js";
@@ -55,9 +63,22 @@
     import GeoTIFF from "ol/source/GeoTIFF.js";
     import { fromLonLat } from "ol/proj.js";
 
-    /** Absoluta COG-URL:er från sidans plats (lokalt under docs/; på Pages ofta sidrot). */
+    /** OSM (3857) + GeoTIFF i UTM/SWEREF99 — utan register(proj4) saknas transform → grå karta. */
+    proj4.defs(
+      "EPSG:3857",
+      "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs"
+    );
+    proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
+    proj4.defs("EPSG:32633", "+proj=utm +zone=33 +datum=WGS84 +units=m +no_defs +type=crs");
+    proj4.defs(
+      "EPSG:3006",
+      "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+    );
+    register(proj4);
+
+    /** Absoluta COG-URL:er från dokumentets bas-URL (inline-modul: import.meta.url kan vara opålitlig). */
     function cogUrl(relPath) {
-      return new URL(relPath, import.meta.url).href;
+      return new URL(relPath, document.baseURI).href;
     }
     const COGS = {
       delta: cogUrl("cogs/ndvi_delta_fiby_urskog_sommar_2024_minus_sommar_2022_cog.tif"),
@@ -154,6 +175,15 @@
     });
 
     await applyViewFromSource(firstSource, layerEpoch);
+
+    const mapEl = document.getElementById("map");
+    function refreshSize() {
+      map.updateSize();
+    }
+    window.addEventListener("load", refreshSize);
+    window.addEventListener("resize", refreshSize);
+    new ResizeObserver(refreshSize).observe(mapEl);
+    requestAnimationFrame(() => requestAnimationFrame(refreshSize));
 
     document.querySelectorAll('input[name="layer"]').forEach((el) => {
       el.addEventListener("change", () => {
