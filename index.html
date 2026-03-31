@@ -2,15 +2,28 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0; url=docs/" />
-  <title>Skogsmonitor-py → karta</title>
-  <link rel="canonical" href="docs/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skogsmonitor-py</title>
+  <!-- Meta refresh till docs/ skadar GitHub Pages: /docs/ finns inte när docs/ publiceras som sidrot (Actions). -->
+  <script>
+    (function () {
+      var h = location.hostname;
+      if (h === "localhost" || h === "127.0.0.1") {
+        location.replace(new URL("docs/", location.href).href);
+      }
+    })();
+  </script>
 </head>
 <body>
   <p>
-    Lokalt (server från repo-rot): omdirigerar till <a href="docs/">docs/</a>.
-    På <strong>GitHub Pages</strong> med Actions är kartan redan på
-    <code>https://&lt;user&gt;.github.io/skogsmonitor-py/</code> — öppna den länken, inte <code>…/docs/</code>.
+    Den här filen ligger i <strong>repo-rot</strong>. Automatisk omdirigering till <code>docs/</code> sker bara på
+    <code>localhost</code> / <code>127.0.0.1</code> (lokal server från klonad repo-rot).
   </p>
+  <p>
+    <strong>GitHub Pages med Actions:</strong> kartan ligger på webbplatsens rot, t.ex.
+    <a href="https://ulfboge.github.io/skogsmonitor-py/">ulfboge.github.io/skogsmonitor-py/</a>
+    — använd inte <code>…/docs/</code> (404).
+  </p>
+  <p>Manuellt: <a href="docs/">docs/</a> (t.ex. om du publicerar hela repot och <code>docs/</code> finns som mapp).</p>
 </body>
 </html>

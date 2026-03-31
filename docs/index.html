@@ -55,7 +55,7 @@
     import GeoTIFF from "ol/source/GeoTIFF.js";
     import { fromLonLat } from "ol/proj.js";
 
-    /** Absoluta URL:er så COG alltid hittas under /docs/ på GitHub Pages. */
+    /** Absoluta COG-URL:er från sidans plats (lokalt under docs/; på Pages ofta sidrot). */
     function cogUrl(relPath) {
       return new URL(relPath, import.meta.url).href;
     }

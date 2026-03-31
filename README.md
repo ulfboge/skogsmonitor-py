@@ -42,7 +42,7 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 **Karta (publik URL):** […/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/) — samma innehåll som lokala `docs/index.html`, men på `github.io` ligger filerna i **roten** av repots webbplats (`cogs/` inte `docs/cogs/`). Adressen **`…/skogsmonitor-py/docs/`** ger därför ofta **404 på COG** och en **tom karta** om sidan ändå laddas (t.ex. gammal länk).
 
-Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)** — då pekar rot-`index.html` i repot vidare till `docs/` **vid lokal kloning**, och `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
+Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)**. Rot-`index.html` omdirigerar **endast på localhost** till `docs/`; på `*.github.io` sker ingen auto-redirect (så du inte skickas till en död `/docs/`-URL). `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
 
 1. **Rekommenderat:** **Settings → Pages → Source → GitHub Actions** (workflow `deploy-pages.yml` laddar upp mappen `docs/` som **hela webbplatsen** — kartan blir `https://<user>.github.io/<repo>/`).
 2. **Alternativ med branch:** välj branch **`main`** och mapp **`/docs`** (inte root) — samma URL-mönster: **ingen** `/docs/` i webbadressen.
