@@ -52,6 +52,8 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 Rot-`index.html` omdirigerar **endast på localhost** till `docs/`. `.nojekyll` under `docs/` stänger av Jekyll. **COG** i `docs/cogs/*.tif` är **gitignorade**; på Pages kommer de från CI efter lyckad körning.
 
+**Övertagande / senaste ändringar:** se [`HANDOVER.md`](HANDOVER.md) (datumstämplad logg).
+
 ## Jämfört med GEE-demon
 
 - Här: reproducerbar **Python-pipeline** och **öppen STAC-kedja** (ingen Earth Engine).  
