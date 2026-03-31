@@ -1,6 +1,8 @@
 # Skogsmonitor-py — NDVI & ΔNDVI (Fiby, Python / STAC)
 
-> **Visas denna README som din “webbplats” på `*.github.io/skogsmonitor-py`?** Då är GitHub Pages sannolikt satt till mapp **`/` (root)** — då väljer GitHub ofta README som startsida. **Åtgärd:** *Settings → Pages → Deploy from a branch → Branch `main` → Folder **`/docs`*** (spara), eller källa **GitHub Actions**. **Direkt till kartan (Actions eller branch /docs):** […/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/) — **inte** `…/docs/`; mappen `docs/` i repot blir **webbplatsens rot**, så det finns ingen sökväg `/docs/` på `github.io`.
+> **Visas denna README som din “webbplats” på `*.github.io/<repo>`?** Då är Pages sannolikt satt till repo-**rot** `/` — GitHub visar då ofta README. **Åtgärd:** *Settings → Pages* → antingen **GitHub Actions** (rekommenderat) eller *Deploy from a branch* → branch `main` → mapp **`/docs`**.
+>
+> **Actions / branch med mapp `/docs`:** På `github.io` finns **ingen** sökväg `…/<repo>/docs/` som motsvarar disk-mappen `docs/`, eftersom innehållet i `docs/` **blir själva webbplatsroten**. **Rätt URL:** `https://<user>.github.io/<repo>/` (samma innehåll som `docs/index.html` i repot). Exempel: [ulfboge.github.io/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/).
 
 Fast AOI (**Fiby urskog**, samma WGS84-bbox som i NVI-repot) och **två sommarfönster** i `config.py`. Tre steg i samma anda som NVI:
 
@@ -40,13 +42,15 @@ Om du ser varningar om `proj.db` / `DATABASE.LAYOUT.VERSION` kommer de ofta frå
 
 ## GitHub Pages
 
-**Karta (publik URL):** […/skogsmonitor-py/](https://ulfboge.github.io/skogsmonitor-py/) — samma innehåll som lokala `docs/index.html`, men på `github.io` ligger filerna i **roten** av repots webbplats (`cogs/` inte `docs/cogs/`). Adressen **`…/skogsmonitor-py/docs/`** ger därför ofta **404 på COG** och en **tom karta** om sidan ändå laddas (t.ex. gammal länk).
+| Scenario | Vad besökaren ska öppna |
+|----------|-------------------------|
+| **GitHub Actions** (`deploy-pages.yml`) | `https://<user>.github.io/<repo>/` — artefakten är **endast** innehållet i `docs/`, så `docs/index.html` **är** startsidan och **repo-rotens** `index.html` används inte. COG:er ligger under `/cogs/`, inte `/docs/cogs/`. |
+| **Branch + mapp `/docs`** | Samma URL-mönster: kartan på `…/<repo>/`, **inte** `…/<repo>/docs/`. |
+| **Branch + rot `/`** | Rot-`index.html` i repot (ingen auto-redirect på `github.io`). Karta: länka till `docs/` i repot eller byt Pages-källa. |
 
-Om rot-URL:en visar README har du troligen **Deploy from a branch** med mapp **`/` (root)**. Rot-`index.html` omdirigerar **endast på localhost** till `docs/`; på `*.github.io` sker ingen auto-redirect (så du inte skickas till en död `/docs/`-URL). `.nojekyll` stänger av Jekyll som annars kan visa `README.md` som startsida.
+`…/<repo>/docs/` ger ofta **404** (gammal bokmärke / fel länk) eller **tom karta** om HTML laddas men COG pekar fel.
 
-1. **Rekommenderat:** **Settings → Pages → Source → GitHub Actions** (workflow `deploy-pages.yml` laddar upp mappen `docs/` som **hela webbplatsen** — kartan blir `https://<user>.github.io/<repo>/`).
-2. **Alternativ med branch:** välj branch **`main`** och mapp **`/docs`** (inte root) — samma URL-mönster: **ingen** `/docs/` i webbadressen.
-3. Lokalt är **COG** under `docs/cogs/*.tif` **gitignorade**; på Pages kommer de från CI efter lyckad körning.
+Rot-`index.html` omdirigerar **endast på localhost** till `docs/`. `.nojekyll` under `docs/` stänger av Jekyll. **COG** i `docs/cogs/*.tif` är **gitignorade**; på Pages kommer de från CI efter lyckad körning.
 
 ## Jämfört med GEE-demon
 

@@ -106,10 +106,15 @@
           try {
             const head = await fetch(COGS.delta, { method: "HEAD", cache: "no-store" });
             if (!head.ok) {
+              var hint = new URL(".", location.href).href;
+              if (location.pathname.includes("/docs")) {
+                var seg = location.pathname.split("/").filter(Boolean)[0];
+                if (seg) hint = location.origin + "/" + seg + "/";
+              }
               msg +=
-                " — På GitHub Actions blir mappen docs/ webbplatsrot: öppna …/" +
-                location.pathname.split("/").filter(Boolean)[0] +
-                "/ (utan /docs/ i sökvägen); COG ligger då under /cogs/, inte /docs/cogs/.";
+                " — På GitHub Pages är repots docs/-mapp webbplatsrot. Prova: " +
+                hint +
+                " (samma som docs/index.html i Git; ingen /docs/ i URL). COG: /cogs/.";
             }
           } catch (_) {
             /* ignore */

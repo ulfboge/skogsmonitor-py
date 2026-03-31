@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Skogsmonitor-py</title>
-  <!-- Meta refresh till docs/ skadar GitHub Pages: /docs/ finns inte när docs/ publiceras som sidrot (Actions). -->
+  <!-- Meta refresh till docs/ skadar GitHub Pages när docs/ publiceras som sidrot (Actions). -->
   <script>
     (function () {
       var h = location.hostname;
@@ -15,15 +15,31 @@
   </script>
 </head>
 <body>
+  <h1 style="font-size:1.1rem;margin:0 0 0.75rem">Skogsmonitor-py</h1>
   <p>
-    Den här filen ligger i <strong>repo-rot</strong>. Automatisk omdirigering till <code>docs/</code> sker bara på
-    <code>localhost</code> / <code>127.0.0.1</code> (lokal server från klonad repo-rot).
+    Den här filen är <strong>repo-rotens</strong> <code>index.html</code>. Automatisk omdirigering till
+    <code>docs/</code> sker bara på <code>localhost</code> / <code>127.0.0.1</code>.
   </p>
   <p>
-    <strong>GitHub Pages med Actions:</strong> kartan ligger på webbplatsens rot, t.ex.
-    <a href="https://ulfboge.github.io/skogsmonitor-py/">ulfboge.github.io/skogsmonitor-py/</a>
-    — använd inte <code>…/docs/</code> (404).
+    <strong>GitHub Actions → Pages:</strong> workflow <code>deploy-pages.yml</code> laddar upp <strong>hela
+    innehållet i mappen <code>docs/</code> som webbplatsens rot</strong>. Besökare ska öppna
+    <strong>repo-rotens webbadress</strong> (ingen <code>/docs/</code> i URL:en) — där ligger samma sida som
+    <code>docs/index.html</code> i repot. Den här rotfilen ingår <em>inte</em> i den artefakten.
   </p>
-  <p>Manuellt: <a href="docs/">docs/</a> (t.ex. om du publicerar hela repot och <code>docs/</code> finns som mapp).</p>
+  <p>
+    <a id="pages-root" href="#">Ladda kartans URL (denna webbplats rot)</a>
+  </p>
+  <p>
+    <strong>Publicerar du hela repot från <code>/</code>?</strong> Då ligger kartan under
+    <a href="docs/">docs/</a>.
+  </p>
+  <script>
+    (function () {
+      var a = document.getElementById("pages-root");
+      var root = new URL(".", location.href).href;
+      a.href = root;
+      a.textContent = root;
+    })();
+  </script>
 </body>
 </html>
