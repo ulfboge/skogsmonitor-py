@@ -1,5 +1,7 @@
 # Skogsmonitor-py — NDVI & ΔNDVI (Fiby, Python / STAC)
 
+> **Visas denna README som din “webbplats” på `*.github.io/skogsmonitor-py`?** Då är GitHub Pages sannolikt satt till mapp **`/` (root)** — då väljer GitHub ofta README som startsida. **Åtgärd:** *Settings → Pages → Deploy from a branch → Branch `main` → Folder **`/docs`*** (spara). Då blir kartan på rot-URL:en. **Alternativ:** källa **GitHub Actions** (workflow i repot). **Direkt till kartan:** […/skogsmonitor-py/docs/](https://ulfboge.github.io/skogsmonitor-py/docs/)
+
 Fast AOI (**Fiby urskog**, samma WGS84-bbox som i NVI-repot) och **två sommarfönster** i `config.py`. Tre steg i samma anda som NVI:
 
 ```text
