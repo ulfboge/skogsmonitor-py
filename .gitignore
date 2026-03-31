@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+data/raw/
+data/processed/*.tif
+data/processed/*.tif.aux.xml
+outputs/rasters/*.tif
+outputs/cogs/*.tif
+docs/cogs/*.tif
+!data/processed/.gitkeep
+!outputs/cogs/.gitkeep
+!docs/cogs/.gitkeep
+.DS_Store

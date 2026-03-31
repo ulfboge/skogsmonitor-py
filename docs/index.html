@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skogsmonitor NDVI — Fiby (Python / STAC)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css" />
+  <style>
+    :root { color-scheme: light; }
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    .panel {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+    .panel h1 { margin: 0 0 6px; font-size: 1rem; }
+    .panel p { margin: 0 0 8px; color: #475569; max-width: 72ch; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+    label { cursor: pointer; }
+    #map { height: calc(100vh - 120px); width: 100%; }
+    .warn { color: #b45309; font-size: 13px; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "ol/": "https://cdn.jsdelivr.net/npm/ol@9.2.4/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="panel">
+    <h1>NDVI & ΔNDVI — Fiby urskog</h1>
+    <p>
+      Fast AOI och två sommarfönster (se <code>config.py</code>). Raster från
+      <strong>Sentinel-2 L2A</strong> via STAC (Microsoft Planetary Computer / Copernicus).
+      Samma satellitdata som i GEE-flöden — här reproducerbar med Python.
+    </p>
+    <div class="controls">
+      <label><input type="radio" name="layer" value="delta" checked /> ΔNDVI (B − A)</label>
+      <label><input type="radio" name="layer" value="a" /> NDVI sommar A</label>
+      <label><input type="radio" name="layer" value="b" /> NDVI sommar B</label>
+      <label>Opacitet <input type="range" id="opacity" min="0" max="100" value="80" /></label>
+    </div>
+    <p class="warn" id="note"></p>
+  </div>
+  <div id="map"></div>
+  <script type="module">
+    import Map from "ol/Map.js";
+    import View from "ol/View.js";
+    import TileLayer from "ol/layer/Tile.js";
+    import WebGLTileLayer from "ol/layer/WebGLTile.js";
+    import OSM from "ol/source/OSM.js";
+    import GeoTIFF from "ol/source/GeoTIFF.js";
+    import { fromLonLat } from "ol/proj.js";
+
+    const COGS = {
+      delta: "cogs/ndvi_delta_fiby_urskog_sommar_2024_minus_sommar_2022_cog.tif",
+      a: "cogs/ndvi_a_sommar_2022_cog.tif",
+      b: "cogs/ndvi_b_sommar_2024_cog.tif",
+    };
+
+    const center = [17.07, 59.885];
+    const base = new TileLayer({ source: new OSM() });
+
+    function makeGeoLayer(url) {
+      return new WebGLTileLayer({
+        opacity: 0.8,
+        source: new GeoTIFF({
+          sources: [{ url }],
+          normalize: true,
+        }),
+      });
+    }
+
+    let overlay = makeGeoLayer(COGS.delta);
+    const map = new Map({
+      target: "map",
+      layers: [base, overlay],
+      view: new View({ center: fromLonLat(center), zoom: 12 }),
+    });
+
+    const note = document.getElementById("note");
+
+    async function probe(url) {
+      try {
+        const r = await fetch(url, { method: "HEAD" });
+        return r.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    const ok = await probe(COGS.delta);
+    if (!ok) {
+      note.textContent =
+        "Ingen COG hittades under docs/cogs/. Kör: python scripts/download_s2.py → compute_ndvi.py → export_cog.py, och serva sidan via lokal webbserver (inte file://).";
+    }
+
+    function setLayer(key) {
+      const url = COGS[key];
+      map.removeLayer(overlay);
+      overlay = makeGeoLayer(url);
+      const op = Number(document.getElementById("opacity").value) / 100;
+      overlay.setOpacity(op);
+      map.addLayer(overlay);
+    }
+
+    document.querySelectorAll('input[name="layer"]').forEach((el) => {
+      el.addEventListener("change", () => {
+        if (el.checked) setLayer(el.value);
+      });
+    });
+
+    document.getElementById("opacity").addEventListener("input", (e) => {
+      overlay.setOpacity(Number(e.target.value) / 100);
+    });
+  </script>
+</body>
+</html>
