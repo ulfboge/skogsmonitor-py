@@ -57,17 +57,20 @@
     import GeoTIFF from "ol/source/GeoTIFF.js";
     import { fromLonLat } from "ol/proj.js";
 
+    /** Absoluta URL:er så COG alltid hittas under /docs/ på GitHub Pages. */
+    function cogUrl(relPath) {
+      return new URL(relPath, import.meta.url).href;
+    }
     const COGS = {
-      delta: "cogs/ndvi_delta_fiby_urskog_sommar_2024_minus_sommar_2022_cog.tif",
-      a: "cogs/ndvi_a_sommar_2022_cog.tif",
-      b: "cogs/ndvi_b_sommar_2024_cog.tif",
+      delta: cogUrl("cogs/ndvi_delta_fiby_urskog_sommar_2024_minus_sommar_2022_cog.tif"),
+      a: cogUrl("cogs/ndvi_a_sommar_2022_cog.tif"),
+      b: cogUrl("cogs/ndvi_b_sommar_2024_cog.tif"),
     };
 
     const fallbackCenter = fromLonLat([17.07, 59.885]);
     const fallbackZoom = 12;
     const base = new TileLayer({ source: new OSM() });
 
-    const note = document.getElementById("note");
     const errEl = document.getElementById("error");
 
     function makeGeoSource(url) {
@@ -87,14 +90,17 @@
 
     let map;
     let overlay;
+    let layerEpoch = 0;
 
-    async function applyViewFromSource(source) {
+    async function applyViewFromSource(source, epoch) {
       try {
         const options = await source.getView();
+        if (epoch !== undefined && epoch !== layerEpoch) return;
         map.setView(new View(options));
         errEl.textContent = "";
       } catch (e) {
         console.error(e);
+        if (epoch !== undefined && epoch !== layerEpoch) return;
         errEl.textContent =
           "Kunde inte läsa GeoTIFF (404, CORS eller ogiltig COG?). Kontrollera att cogs/*.tif finns efter CI eller lokalt export_cog. " +
           (e && e.message ? "(" + e.message + ")" : "");
@@ -108,17 +114,17 @@
     }
 
     async function setLayer(key) {
+      const epoch = ++layerEpoch;
       const url = COGS[key];
       const op = Number(document.getElementById("opacity").value) / 100;
       map.removeLayer(overlay);
       const source = makeGeoSource(url);
       overlay = makeGeoLayer(source, op);
       map.addLayer(overlay);
-      await applyViewFromSource(source);
+      await applyViewFromSource(source, epoch);
     }
 
-    const firstUrl = COGS.delta;
-    const firstSource = makeGeoSource(firstUrl);
+    const firstSource = makeGeoSource(COGS.delta);
     overlay = makeGeoLayer(firstSource, 0.8);
 
     map = new Map({
@@ -130,11 +136,7 @@
       }),
     });
 
-    try {
-      await applyViewFromSource(firstSource);
-    } catch (e) {
-      console.error(e);
-    }
+    await applyViewFromSource(firstSource, layerEpoch);
 
     document.querySelectorAll('input[name="layer"]').forEach((el) => {
       el.addEventListener("change", () => {
