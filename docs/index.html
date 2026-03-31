@@ -19,7 +19,6 @@
     .controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
     label { cursor: pointer; }
     #map { height: calc(100vh - 120px); width: 100%; background: #e5e7eb; }
-    .warn { color: #b45309; font-size: 13px; }
     .err { color: #b91c1c; font-size: 13px; }
   </style>
   <script type="importmap">
@@ -44,7 +43,6 @@
       <label><input type="radio" name="layer" value="b" /> NDVI sommar B</label>
       <label>Opacitet <input type="range" id="opacity" min="0" max="100" value="80" /></label>
     </div>
-    <p class="warn" id="note"></p>
     <p class="err" id="error"></p>
   </div>
   <div id="map"></div>
